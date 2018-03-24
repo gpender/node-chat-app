@@ -29,7 +29,9 @@ io.on('connection',(socket)=>{
         //         createdAt:new Date().getTime()
         //     });
     });
-
+    socket.on('createLocationMessage',(coords)=>{
+        io.emit('newMessage',generateMessage('Admin',`latitude:${coords.latitude},longitude:${coords.longitude}`))
+    });
     socket.on('disconnect',()=>{
         console.log('Client disconnected');
     });
