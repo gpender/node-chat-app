@@ -13,6 +13,17 @@ var io = socketIO(server);
 
 io.on('connection',(socket)=>{
     console.log('New client connected');
+    
+    socket.emit('newEmail',{
+        from:'guy.pender@me.com',
+        text:'Hello you',
+        createdAt:123
+    });
+    socket.on('createMessage',(newMessage)=>{
+        console.log('createMessage',newMessage);
+        socket.emit('newMessage',newMessage);
+    });
+
     socket.on('disconnect',()=>{
         console.log('Client disconnected');
     });
