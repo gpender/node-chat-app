@@ -11,6 +11,15 @@ socket.on('newMessage',function(message){
     jQuery('#messages').append(li);
     console.log('New Message',message);
 });
+socket.on('newLocationMessage',function(message){
+    var li = jQuery('<li></li>');
+    var a = jQuery('<a target="_blank">My current location</a>');
+    li.text(`${message.from}: `);
+    a.attr('href',message.url);
+    li.append(a);
+    jQuery('#messages').append(li);
+    console.log('New Message',message);
+});
 
 // socket.emit('createMessage',{
 //     from:'fred',
@@ -47,3 +56,4 @@ locationButton.on('click',()=>{
         alert('Unable to fetch location');
     });
 })
+//www.googlemaps.com/maps?q=50.82296536934156,-0.47751036769027094
