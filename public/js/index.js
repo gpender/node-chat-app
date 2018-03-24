@@ -6,5 +6,28 @@ socket.on('disconnect',function(){
     console.log('Disconnected from server');
 });
 socket.on('newMessage',function(message){
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}: ${message.text}`)
+    jQuery('#messages').append(li);
     console.log('New Message',message);
 });
+
+// socket.emit('createMessage',{
+//     from:'fred',
+//     text:'hello'
+//     },
+//     function(message){
+//         console.log(message);
+//     }
+// );
+jQuery('#message-form').on('submit',(e)=>{
+    e.preventDefault();
+    socket.emit('createMessage',{
+        from:'fred',
+        text:jQuery('[name=message').val()
+        },
+        function(message){
+            console.log(message);
+        }
+    );
+})
