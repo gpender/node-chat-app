@@ -30,16 +30,16 @@ io.on('connection',(socket)=>{
         users.addUser(socket.id,params.name,params.room);
 
         io.to(params.room).emit('updateUsersList',users.getUserList(params.room));
-        socket.emit('newMessage',generateMessage('Admin','Welcome to the chat app'));
+        socket.emit('newMessage',generateMessage('Admin',`Welcome to the chat app ${params.name}`));
         socket.broadcast.to(params.room).emit('newMessage',generateMessage('Admin','New User ' + params.name + ' joined'));
         callback();
     });
-    socket.on('createMessage',(newMessage,callback)=>{
-        console.log('createMessage',newMessage);
-
-
-        io.emit('newMessage',generateMessage(newMessage.from,newMessage.text));
-        callback('Received message OK');
+    socket.on('createMessage',(newMessage,callback)=>{        
+        user = users.getUser(socket.id);
+        if(user && isRealString(newMessage.text)){
+            io.to(user.room).emit('newMessage',generateMessage(user.name,newMessage.text));
+            callback('Received message OK');
+        }
         // socket.broadcast.emit('newMessage',{
         //         from:newMessage.from,
         //         text:newMessage.text,
@@ -47,7 +47,11 @@ io.on('connection',(socket)=>{
         //     });
     });
     socket.on('createLocationMessage',(coords)=>{
-        io.emit('newLocationMessage',generateLocationMessage('Fred',coords.latitude,coords.longitude));
+        user = users.getUser(socket.id);
+        if(user){
+            io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,coords.latitude,coords.longitude));
+        }
+        callback('Received message OK');
     });
     socket.on('disconnect',()=>{
         var user = users.removeUser(socket.id);
